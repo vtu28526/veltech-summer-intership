@@ -1,0 +1,11 @@
+region,vaccination_rate,population_density,sanitation_score,risk_class,cases_last_week
+North Zone,82,4200,78,Low,12
+South Zone,64,6900,58,Medium,46
+East Zone,51,8700,43,High,98
+West Zone,38,11200,31,Critical,171
+Central Zone,74,5300,69,Medium,33
+River Ward,45,9600,37,High,124
+Hill Ward,88,3100,82,Low,7
+Market Ward,,10400,29,Critical,153
+Lake Ward,69,6200,,Medium,41
+Industrial Ward,34,12300,25,Critical,
