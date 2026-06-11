@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Day 4 Disease Outbreak Code Flowchart</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f7fb;
+            color: #1f2937;
+        }
+
+        .page {
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 28px;
+        }
+
+        h1 {
+            margin: 0 0 8px;
+            font-size: 28px;
+        }
+
+        p {
+            margin: 0 0 24px;
+            color: #4b5563;
+        }
+
+        .flowchart {
+            background: #ffffff;
+            border: 1px solid #dbe3ef;
+            border-radius: 8px;
+            padding: 24px;
+            overflow-x: auto;
+        }
+
+        svg {
+            min-width: 1080px;
+            height: 780px;
+        }
+
+        .box {
+            fill: #ffffff;
+            stroke: #2563eb;
+            stroke-width: 2;
+            rx: 8;
+        }
+
+        .start {
+            fill: #e0f2fe;
+            stroke: #0284c7;
+        }
+
+        .output {
+            fill: #ecfdf5;
+            stroke: #059669;
+        }
+
+        .model {
+            fill: #fff7ed;
+            stroke: #ea580c;
+        }
+
+        .text-title {
+            font-size: 15px;
+            font-weight: 700;
+            fill: #111827;
+        }
+
+        .text-small {
+            font-size: 12px;
+            fill: #4b5563;
+        }
+
+        .arrow {
+            stroke: #64748b;
+            stroke-width: 2;
+            fill: none;
+            marker-end: url(#arrowhead);
+        }
+    </style>
+</head>
+<body>
+    <main class="page">
+        <h1>Day 4 Disease Outbreak Risk Predictor Flowchart</h1>
+        <p>Flow of the seven Python exercise files from dataset loading to charts, regression, comparison, prediction plot, and model saving.</p>
+
+        <section class="flowchart">
+            <svg viewBox="0 0 1080 780" role="img" aria-label="Flowchart for seven Day 4 code files">
+                <defs>
+                    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                        <polygon points="0 0, 10 3.5, 0 7" fill="#64748b"></polygon>
+                    </marker>
+                </defs>
+
+                <rect class="box start" x="390" y="20" width="300" height="72"></rect>
+                <text class="text-title" x="540" y="50" text-anchor="middle">disease_outbreak_sample.csv</text>
+                <text class="text-small" x="540" y="72" text-anchor="middle">vaccination, density, sanitation, cases, risk class</text>
+
+                <rect class="box" x="60" y="145" width="280" height="86"></rect>
+                <text class="text-title" x="200" y="176" text-anchor="middle">1. chart_in_one_file.py</text>
+                <text class="text-small" x="200" y="198" text-anchor="middle">Load data and create basic charts</text>
+                <text class="text-small" x="200" y="216" text-anchor="middle">Output: chart image files</text>
+
+                <rect class="box" x="400" y="145" width="280" height="86"></rect>
+                <text class="text-title" x="540" y="176" text-anchor="middle">2. disease_outbreak_charts.py</text>
+                <text class="text-small" x="540" y="198" text-anchor="middle">Create styled charts and SQLite summary</text>
+                <text class="text-small" x="540" y="216" text-anchor="middle">Output: charts + SQLite file</text>
+
+                <rect class="box" x="740" y="145" width="280" height="86"></rect>
+                <text class="text-title" x="880" y="176" text-anchor="middle">3. train_test_split_explorer.py</text>
+                <text class="text-small" x="880" y="198" text-anchor="middle">Try different test_size values</text>
+                <text class="text-small" x="880" y="216" text-anchor="middle">Output: split comparison CSV</text>
+
+                <rect class="box" x="60" y="320" width="280" height="86"></rect>
+                <text class="text-title" x="200" y="351" text-anchor="middle">4. your_first_regression.py</text>
+                <text class="text-small" x="200" y="373" text-anchor="middle">Use numeric features for regression</text>
+                <text class="text-small" x="200" y="391" text-anchor="middle">Output: MAE, MSE, R2 score</text>
+
+                <rect class="box" x="400" y="320" width="280" height="86"></rect>
+                <text class="text-title" x="540" y="351" text-anchor="middle">5. feature_comparison_rmse.py</text>
+                <text class="text-small" x="540" y="373" text-anchor="middle">Loop over features and compare RMSE</text>
+                <text class="text-small" x="540" y="391" text-anchor="middle">Output: best feature by RMSE</text>
+
+                <rect class="box" x="740" y="320" width="280" height="86"></rect>
+                <text class="text-title" x="880" y="351" text-anchor="middle">6. predict_vs_actual_plot.py</text>
+                <text class="text-small" x="880" y="373" text-anchor="middle">Plot actual cases vs predicted cases</text>
+                <text class="text-small" x="880" y="391" text-anchor="middle">Output: scatter plot PNG</text>
+
+                <rect class="box model" x="400" y="505" width="280" height="90"></rect>
+                <text class="text-title" x="540" y="535" text-anchor="middle">7. save_your_model_pickle.py</text>
+                <text class="text-small" x="540" y="557" text-anchor="middle">Train Random Forest classifier</text>
+                <text class="text-small" x="540" y="575" text-anchor="middle">Output: .pkl model using pickle</text>
+
+                <rect class="box output" x="275" y="670" width="530" height="72"></rect>
+                <text class="text-title" x="540" y="700" text-anchor="middle">Final Exercise Outputs</text>
+                <text class="text-small" x="540" y="722" text-anchor="middle">charts, CSV reports, regression metrics, scatter plot, saved pickle model</text>
+
+                <path class="arrow" d="M 440 92 L 220 145"></path>
+                <path class="arrow" d="M 540 92 L 540 145"></path>
+                <path class="arrow" d="M 640 92 L 860 145"></path>
+
+                <path class="arrow" d="M 200 231 L 200 320"></path>
+                <path class="arrow" d="M 540 231 L 540 320"></path>
+                <path class="arrow" d="M 880 231 L 880 320"></path>
+
+                <path class="arrow" d="M 340 363 L 400 363"></path>
+                <path class="arrow" d="M 680 363 L 740 363"></path>
+                <path class="arrow" d="M 540 406 L 540 505"></path>
+
+                <path class="arrow" d="M 200 406 C 200 620, 370 620, 430 670"></path>
+                <path class="arrow" d="M 540 595 L 540 670"></path>
+                <path class="arrow" d="M 880 406 C 880 620, 710 620, 650 670"></path>
+            </svg>
+        </section>
+    </main>
+</body>
+</html>
