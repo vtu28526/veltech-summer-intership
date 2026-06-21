@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% set title = "Prediction History" %}
+
+{% block content %}
+<main class="page">
+    <div class="page-title page-title-row">
+        <div>
+            <p class="eyebrow">Audit trail</p>
+            <h1>Prediction History</h1>
+            <p>Saved outbreak risk predictions for the current account.</p>
+        </div>
+        <a class="btn primary" href="{{ url_for('predict') }}">New Prediction</a>
+    </div>
+
+    <section class="table-card">
+        <div class="table-header">
+            <div>
+                <h2>Saved Results</h2>
+                <p>Total shown: {{ predictions|length }}</p>
+            </div>
+        </div>
+        {% if predictions %}
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>County</th>
+                            <th>Disease</th>
+                            <th>Score</th>
+                            <th>Level</th>
+                            <th>Created</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in predictions %}
+                            <tr>
+                                <td>{{ item["county"] }}, {{ item["state"] }}</td>
+                                <td>{{ item["disease_type"] }}</td>
+                                <td>{{ item["risk_score"] }}</td>
+                                <td><span class="risk-pill {{ item['risk_level']|lower }}">{{ item["risk_level"] }}</span></td>
+                                <td>{{ item["created_at"] }}</td>
+                                <td>{{ item["notes"] or "-" }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <div class="empty-state">
+                <h2>No predictions found</h2>
+                <p>Generate a prediction to see it here.</p>
+                <a class="btn primary" href="{{ url_for('predict') }}">Predict Now</a>
+            </div>
+        {% endif %}
+    </section>
+</main>
+{% endblock %}

@@ -1,0 +1,181 @@
+{% extends "base.html" %}
+{% set title = "Disease Surveillance Dashboard" %}
+
+{% block content %}
+<main class="surveillance-dashboard">
+    <section class="dashboard-hero">
+        <div class="dashboard-copy">
+            <p class="eyebrow">Disease Surveillance</p>
+            <h1>Disease Outbreak Risk Predictor</h1>
+            <p>Monitor county-level outbreak exposure, identify active hotspots, and generate explainable risk predictions from public health indicators.</p>
+        </div>
+        <div class="dashboard-actions">
+            <a class="btn primary" href="{{ url_for('predict') }}">Predict Risk</a>
+            <a class="btn secondary" href="{{ url_for('analysis') }}">View Analysis</a>
+        </div>
+    </section>
+
+    <section class="dashboard-grid">
+        <article class="map-panel dashboard-panel">
+            <div class="panel-header">
+                <div>
+                    <h2>Global Outbreak Map</h2>
+                    <p>{{ total_counties }} counties monitored across {{ states|length }} states and territories</p>
+                </div>
+                <span class="status-chip">{{ dashboard.global_points|length }} active</span>
+            </div>
+            <div class="outbreak-map" aria-label="Global outbreak hotspot map">
+                <svg class="map-svg" viewBox="0 0 1000 560" role="img" aria-label="Global outbreak map">
+                    <defs>
+                        <linearGradient id="worldFill" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#6f694f" />
+                            <stop offset="52%" stop-color="#4d5547" />
+                            <stop offset="100%" stop-color="#323b37" />
+                        </linearGradient>
+                        <linearGradient id="worldStroke" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="#ffb12a" stop-opacity="0.35" />
+                            <stop offset="100%" stop-color="#f8df57" stop-opacity="0.72" />
+                        </linearGradient>
+                    </defs>
+                    <path class="world-continent north-america" d="M74 172 L105 131 L166 99 L241 94 L303 128 L337 177 L316 229 L273 251 L242 301 L211 340 L159 332 L120 293 L74 266 L47 218 Z" />
+                    <path class="world-continent central-america" d="M226 319 L274 319 L324 348 L309 375 L252 360 Z" />
+                    <path class="world-continent south-america" d="M311 361 L365 391 L386 454 L365 514 L316 547 L283 503 L267 439 L239 390 Z" />
+                    <path class="world-continent europe" d="M420 149 L477 121 L538 142 L562 181 L531 214 L470 217 L414 188 Z" />
+                    <path class="world-continent africa" d="M460 223 L538 224 L594 284 L603 363 L571 441 L520 497 L472 449 L437 350 L424 280 Z" />
+                    <path class="world-continent asia" d="M545 142 L638 101 L754 109 L866 161 L936 225 L900 292 L804 300 L753 352 L691 350 L623 303 L579 245 Z" />
+                    <path class="world-continent southeast-asia" d="M705 326 L762 355 L789 407 L752 424 L705 385 Z" />
+                    <path class="world-continent australia" d="M744 410 L829 394 L910 428 L884 489 L796 489 L726 449 Z" />
+                    <path class="world-continent greenland" d="M281 57 L361 28 L430 55 L393 104 L306 112 Z" />
+                    <g class="map-state-lines">
+                        <path d="M80 280 L920 280" />
+                        <path d="M94 178 L885 178" />
+                        <path d="M122 390 L875 390" />
+                        <path d="M250 72 L250 510" />
+                        <path d="M500 70 L500 510" />
+                        <path d="M750 72 L750 510" />
+                    </g>
+                    <g class="map-connection-lines">
+                        <path d="M178 220 C321 117 470 159 561 236 S740 258 857 224" />
+                        <path d="M319 384 C439 269 558 302 683 278 S810 300 865 427" />
+                        <path d="M476 175 C575 95 719 112 882 207" />
+                    </g>
+                </svg>
+                {% for hotspot in dashboard.global_points %}
+                    <span class="hotspot {{ hotspot.level|lower }}" style="left: {{ hotspot.x }}%; top: {{ hotspot.y }}%;" title="{{ hotspot.label }} - {{ hotspot.score }}"></span>
+                {% endfor %}
+            </div>
+            <div class="map-legend">
+                <span>Low</span>
+                <span>Moderate</span>
+                <span>High</span>
+                <span>Critical</span>
+            </div>
+        </article>
+
+        <aside class="dashboard-stack">
+            <article class="dashboard-panel metric-panel">
+                <h2>Key Metrics</h2>
+                <div class="metric-ring" style="--score: {{ dashboard.average_score }};">
+                    <strong>{{ dashboard.average_score }}</strong>
+                    <span>avg risk</span>
+                </div>
+                <div class="metric-split">
+                    <div>
+                        <span>High risk</span>
+                        <strong>{{ dashboard.high_count }}</strong>
+                    </div>
+                    <div>
+                        <span>Critical</span>
+                        <strong>{{ dashboard.critical_count }}</strong>
+                    </div>
+                </div>
+                <a class="btn secondary full-width" href="{{ url_for('history') }}">Full Report</a>
+            </article>
+
+            <article class="dashboard-panel trend-panel">
+                <h2>Disease Trends</h2>
+                <div class="trend-list">
+                    {% for disease in dashboard.disease_snapshot %}
+                        <div class="trend-row {{ disease.tone }}">
+                            <span>{{ disease.name }}</span>
+                            <b>{{ disease.count }}</b>
+                            <i style="width: {{ 22 + disease.count * 18 }}%;"></i>
+                        </div>
+                    {% endfor %}
+                </div>
+            </article>
+        </aside>
+
+        <article class="dashboard-panel chart-panel">
+            <div class="panel-header">
+                <div>
+                    <h2>Disease Trends</h2>
+                    <p>Recent prediction activity and model score distribution</p>
+                </div>
+                <a class="text-link" href="{{ url_for('history') }}">Full Report</a>
+            </div>
+            <div class="trend-chart" aria-hidden="true">
+                <span style="height: 20%;"></span>
+                <span style="height: 35%;"></span>
+                <span style="height: 30%;"></span>
+                <span style="height: 52%;"></span>
+                <span style="height: 45%;"></span>
+                <span style="height: 64%;"></span>
+                <span style="height: 58%;"></span>
+                <span style="height: 76%;"></span>
+                <span style="height: 86%;"></span>
+            </div>
+            <div class="chart-metrics">
+                <div>
+                    <strong>{{ dashboard.total_population }}</strong>
+                    <span>Population covered</span>
+                </div>
+                <div>
+                    <strong>{{ latest|length }}</strong>
+                    <span>Recent predictions</span>
+                </div>
+            </div>
+        </article>
+
+        <article class="dashboard-panel spread-panel">
+            <h2>Hotspot Ranking</h2>
+            <div class="hotspot-list">
+                {% for hotspot in dashboard.hotspots[:5] %}
+                    <div>
+                        <span>{{ hotspot.county }}, {{ hotspot.state }}</span>
+                        <b>{{ hotspot.score }}</b>
+                    </div>
+                {% endfor %}
+            </div>
+        </article>
+    </section>
+
+    <section class="section recent-section">
+        <div class="section-heading">
+            <div>
+                <p class="eyebrow">Activity</p>
+                <h2>Recent predictions</h2>
+            </div>
+            <a class="text-link" href="{{ url_for('history') }}">View all history</a>
+        </div>
+        <div class="card-grid">
+            {% for item in latest %}
+                <article class="card">
+                    <div class="card-topline">
+                        <span class="risk-pill {{ item['risk_level']|lower }}">{{ item["risk_level"] }}</span>
+                        <span class="score-chip">{{ item["risk_score"] }}</span>
+                    </div>
+                    <h3>{{ item["county"] }}, {{ item["state"] }}</h3>
+                    <p>{{ item["disease_type"] }} outbreak risk assessment.</p>
+                </article>
+            {% else %}
+                <article class="card">
+                    <span class="risk-pill neutral">Ready</span>
+                    <h3>No predictions yet</h3>
+                    <p>Run the first prediction to start building history.</p>
+                </article>
+            {% endfor %}
+        </div>
+    </section>
+</main>
+{% endblock %}

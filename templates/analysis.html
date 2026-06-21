@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+{% set title = "Analysis Report" %}
+
+{% block content %}
+<main class="page analysis-page">
+    <div class="page-title page-title-row">
+        <div>
+            <p class="eyebrow">Analysis report</p>
+            <h1>Outbreak Risk Analysis</h1>
+            <p>Surveillance summary generated from county indicators, disease scenarios, and saved prediction activity.</p>
+        </div>
+        <a class="btn primary" href="{{ url_for('predict') }}">Run Prediction</a>
+    </div>
+
+    <section class="report-kpi-grid">
+        <article class="report-kpi">
+            <span>Average risk score</span>
+            <strong>{{ report.average_score }}</strong>
+            <small>General infectious model</small>
+        </article>
+        <article class="report-kpi">
+            <span>Counties analyzed</span>
+            <strong>{{ report.total_counties }}</strong>
+            <small>{{ report.states }} states and territories</small>
+        </article>
+        <article class="report-kpi">
+            <span>Saved predictions</span>
+            <strong>{{ report.prediction_count }}</strong>
+            <small>{% if report.latest_prediction %}Latest: {{ report.latest_prediction["created_at"] }}{% else %}No saved history yet{% endif %}</small>
+        </article>
+    </section>
+
+    <section class="analysis-grid">
+        <article class="dashboard-panel">
+            <div class="panel-header">
+                <div>
+                    <h2>Risk Level Distribution</h2>
+                    <p>County counts by computed model level.</p>
+                </div>
+            </div>
+            <div class="distribution-list">
+                {% for level, count in report.level_counts.items() %}
+                    <div class="distribution-row">
+                        <div>
+                            <span class="risk-pill {{ level|lower }}">{{ level }}</span>
+                            <b>{{ count }}</b>
+                        </div>
+                        <i style="width: {{ (count / report.total_counties * 100) if report.total_counties else 0 }}%;"></i>
+                    </div>
+                {% endfor %}
+            </div>
+        </article>
+
+        <article class="dashboard-panel">
+            <div class="panel-header">
+                <div>
+                    <h2>Disease Scenario Summary</h2>
+                    <p>Average and peak score by disease category.</p>
+                </div>
+            </div>
+            <div class="scenario-list">
+                {% for item in report.disease_summary %}
+                    <div class="scenario-row">
+                        <div>
+                            <strong>{{ item.name }}</strong>
+                            <span>{{ item.level }} average risk</span>
+                        </div>
+                        <b>{{ item.average }}</b>
+                        <small>Peak {{ item.peak }}</small>
+                    </div>
+                {% endfor %}
+            </div>
+        </article>
+
+        <article class="dashboard-panel wide-panel">
+            <div class="panel-header">
+                <div>
+                    <h2>Top Risk Drivers</h2>
+                    <p>Most influential indicator factors based on normalized score and model weight.</p>
+                </div>
+            </div>
+            <div class="factor-list report-factor-list">
+                {% for factor in report.factor_rows %}
+                    <div class="factor-row">
+                        <div>
+                            <strong>{{ factor.label }}</strong>
+                            <span>Average value: {{ factor.average_value }}</span>
+                        </div>
+                        <div class="meter" aria-label="{{ factor.label }} average score">
+                            <span style="width: {{ factor.average_score }}%;"></span>
+                        </div>
+                        <b>{{ factor.average_score }}</b>
+                    </div>
+                {% endfor %}
+            </div>
+        </article>
+    </section>
+
+    <section class="analysis-grid table-analysis-grid">
+        <article class="table-card">
+            <div class="table-header">
+                <div>
+                    <h2>Highest-Risk Counties</h2>
+                    <p>Top model scores across monitored counties.</p>
+                </div>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>County</th>
+                            <th>State</th>
+                            <th>Score</th>
+                            <th>Level</th>
+                            <th>Top Driver</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in report.top_counties %}
+                            <tr>
+                                <td>{{ item.row.county }}</td>
+                                <td>{{ item.row.state }}</td>
+                                <td>{{ item.score }}</td>
+                                <td><span class="risk-pill {{ item.level|lower }}">{{ item.level }}</span></td>
+                                <td>{{ item.details[0].label if item.details else "-" }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </article>
+
+        <article class="table-card">
+            <div class="table-header">
+                <div>
+                    <h2>Top State Averages</h2>
+                    <p>States ranked by average county risk.</p>
+                </div>
+            </div>
+            <div class="table-wrap compact-table">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>State</th>
+                            <th>Avg</th>
+                            <th>Level</th>
+                            <th>Counties</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in report.top_states %}
+                            <tr>
+                                <td>{{ item.state }}</td>
+                                <td>{{ item.average }}</td>
+                                <td><span class="risk-pill {{ item.level|lower }}">{{ item.level }}</span></td>
+                                <td>{{ item.counties }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </article>
+    </section>
+</main>
+{% endblock %}
